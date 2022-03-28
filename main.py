@@ -3,7 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description="This program helps to calculate your loan.")
 group = parser.add_mutually_exclusive_group()
-parser.add_argument('--type', help='indicates the type of payment', required=True, choices=['annuity', 'diff'])
+parser.add_argument('--type', help='indicates the type of payment', choices=['annuity', 'diff'])
 parser.add_argument('--payment', type=int, help='is the monthly payment amount')
 parser.add_argument('--principal', type=int, help='loan principal')
 parser.add_argument('--interest', type=float, help='interest ')
@@ -39,6 +39,9 @@ if prog_type == "annuity":
         Overpayment = Total_payment - p
         print(f'Overpayment={Overpayment}')
 
+    elif args.interest is None or args.principal <= 0:
+        print("Incorrect parameters")
+
     elif args.periods is None:
         p = args.principal
         a = args.payment
@@ -66,11 +69,11 @@ if prog_type == "annuity":
 
 
 # Calculating differentiated payments
-elif prog_type == "diff":
+elif prog_type == "diff" and args.principal > 0:
     p = args.principal
     n = args.periods
     interest_rate = args.interest
-    i = float(interest_rate / 100 / 12)
+    i = interest_rate / 100 / 12
     m = n
     a = math.ceil(p * i * (math.pow(1 + i, n)) / (math.pow(1 + i, n) - 1))
     Total_payment = 0
